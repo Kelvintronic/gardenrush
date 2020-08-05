@@ -1,0 +1,86 @@
+﻿@page "/"
+
+@inherits IndexBase
+
+    <AuthorizeView>
+
+        @if (@bVerified)
+        {
+
+            <div class="container">
+                <div class="screen">
+                    <div id="table">
+                        <div id="title"><h3>Garden Rush</h3></div>
+                        <div id="home"><a href="https://kelvintronic.nz/"><h4>Kelvintronic</h4></a></div>
+                        <div id="board">
+                            <img id = "myImage" src = "/images/bee.png" style="z-index:100; display: none;" />
+                            <div id="out_turn" class="gr_message">@TurnMessage</div> 
+                            <div id="bag" ></div> 
+                            <div id="hostscore">@Player.NScore</div>   
+                            <div id="guestscore">@OtherPlayer.NScore</div>   
+                            <button id="playeraid" data-toggle="modal" data-target="#myModal">
+                                Scoring
+                            </button>
+    
+                            <CascadingValue Value="@GamePieces">
+
+                                <PlayerBoard @ref="playerBoard" playerName="@Player.Identity" nPlayer="@Player.NPlayer" gameId="@gameId"
+                                             nGameStatus="@game.NGameStatus" OnChange="StatusChangeHandler" bHost="true" />
+                            <div id="truck">
+                                <Truck @ref="truck" gameId="@gameId" nSessionPlayer="@Player.NPlayer" strIdentity="@Player.Identity"
+                                              nGameStatus="@game.NGameStatus" OnChange="StatusChangeHandler" />
+                            </div>
+                                 <PlayerBoard @ref="otherBoard" playerName="@OtherPlayer.Identity" nPlayer="@OtherPlayer.NPlayer"
+                                              gameId="@gameId" nGameStatus="@game.NGameStatus" OnChange="StatusChangeHandler" bHost="false" />
+
+                            </CascadingValue>
+
+                            <img id="image1" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image2" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image3" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image4" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image5" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image6" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image7" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image8" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image9" src="/images/bee.png" style="z-index:100; display: none;">
+                            <img id="image10" src="/images/bee.png" style="z-index:100; display: none;">
+
+                       </div>
+                       <div class="container">
+                        <!-- The Modal -->
+                        <div class="modal" id="myModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        @if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
+                                        {
+                                        <img class="img-fluid" src="/gardenrush/images/Garden-Guide-Basic.jpg">
+                                        }
+                                        else
+                                        {
+                                        <img class="img-fluid" src="/images/Garden-Guide-Basic.jpg">
+                                        }
+                                    </div>
+
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        }
+        else
+        {
+            <h1> Specified game does not exist or you are not a player!</h1>
+        }
+    </AuthorizeView>
+

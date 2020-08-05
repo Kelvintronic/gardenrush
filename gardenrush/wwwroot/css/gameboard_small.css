@@ -1,0 +1,57 @@
+﻿.board {
+    position: relative;
+    display: block;
+    width: 700px;
+    height: 980px;
+    background-image: url("/images/Garden-Rush-Board-xs.jpg");
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: top left;
+}
+
+#player1{
+    position: absolute;
+    top: 60px;
+    left: 108px;
+}
+
+#player2{
+    position: absolute;
+    top: 290px;
+    left: 108px;
+}
+
+#playeraid{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 80px;
+    height: 120px;
+    border: 1px;
+    border-style: solid;
+    background-image: url("/images/Garden-Guide-Basic-icon.jpg");
+}
+
+.playerfield {
+    display: grid;
+    grid-template-columns: repeat(7, 35px);
+    grid-template-rows: repeat(5, 35px);
+    grid-area: auto;
+    cursor: pointer;
+    border: 1px;
+    border-style:solid;
+}
+
+.playerfield > button {
+    border: 1px blue;
+    border-style: solid;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+
+
+
+

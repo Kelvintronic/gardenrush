@@ -1,0 +1,167 @@
+﻿
+#table {
+    position: relative;
+    display: block;
+    width: 570px;
+    height: 1000px;
+    background-color: transparent;
+}
+
+#title{
+    position: absolute; 
+    top: 0px; 
+    left: 20px;
+}
+
+#home{
+    position: absolute; 
+    top: 0px; 
+    left: 440px;
+}
+
+#board {
+    position: relative;
+    display: block;
+    top: 30px; 
+    left: 0px;
+    width: 570px;
+    height: 980px;
+    background-image: url("/images/GardenRushBoard.jpg");
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#host{
+    position: absolute;
+    top: 110px;
+    left: 200px;
+}
+
+#guest{
+    position: absolute;
+    top: 540px;
+    left: 200px;
+}
+
+#playeraid{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 80px;
+    height: 120px;
+    border: 1px;
+    border-style: solid;
+    background-image: url("/images/GardenGuide-icon.jpg");
+}
+
+#harvestButton{
+    position: absolute;
+    top: 5px;
+    left: 100px;
+    width: 70px;
+    height: 70px;
+    border: 1px green;
+    border-style: solid;
+}
+#testButton{
+    position: absolute;
+    top: 95px;
+    left: 100px;
+    width: 70px;
+    height: 70px;
+    border: 1px red;
+    border-style: none;
+}
+
+#truck {
+    position: absolute;
+    top: 457px;
+    left: 200px;
+    display: grid;
+    grid-template-columns: repeat(5, 66px);
+    grid-template-rows: 66px;
+    grid-area: auto;
+    cursor: pointer;
+    border: 1px;
+    border-style:solid;
+}
+
+#truck > button {
+    border: 1px red;
+    border-style: solid;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+.playerfield {
+    display: grid;
+    grid-template-columns: repeat(5, 66px);
+    grid-template-rows: repeat(5, 66px);
+    grid-area: auto;
+    cursor: pointer;
+    border: 1px;
+    border-style:solid;
+}
+
+.playerfield > button {
+    border: 1px blue;
+    border-style: solid;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.gr_message {
+    position: absolute;
+    top: 200px;
+    left: 10px;
+    font-size: 28px;
+    font: bold;
+    padding: 8px 3px;
+}
+
+#bag {
+    position: absolute;
+    top: 455px;
+    left: 50px;
+    width: 70px;
+    height: 70px;
+    border: 1px red;
+    border-style: none;
+}
+
+#hostscore {
+    position: absolute;
+    top: 313px;
+    left: 40px;
+    width: 50px;
+    height: 30px;
+    border: 1px red;
+    border-style: none;
+    font-size: 22px;
+    font: arial;
+    text-align: right;
+    padding: 0px 0px;
+}
+
+#guestscore {
+    position: absolute;
+    top: 575px;
+    left: 49px;
+    width: 50px;
+    height: 30px;
+    border: 1px red;
+    border-style: none;
+    font-size: 22px;
+    font: arial;
+    text-align: right;
+    padding: 0px 0px;
+}
+
+
+
+
+

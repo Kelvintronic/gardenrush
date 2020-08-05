@@ -1,0 +1,24 @@
+﻿@inherits TruckBase
+
+    <AuthorizeView>
+
+    @if(gameService == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        @for(int id=0;id<5;id++)
+        {
+            var buttonId = id;
+            <button id="@id" style="background-image: url(@GetImageFilePath(id)); border-style: @GetBorderStyle(id)"
+                    @onclick="@(e => TruckGridClick(e, buttonId))"></button>
+        }
+    }
+
+    </AuthorizeView>
+
+    @code {
+
+
+    }

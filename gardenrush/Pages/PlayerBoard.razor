@@ -1,0 +1,36 @@
+﻿@inherits PlayerBoardBase
+@using System.Threading;
+
+<AuthorizeView>
+
+    @if (gameService == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        string tableId="guest";
+        if(bHost)
+        {
+            tableId = "host";
+            <button id="harvestButton" style="background-color: @GetHarvestButtonColour()"
+                    @onclick="@(e => HarvestClick(e))">Harvest</button>     
+        }
+
+        
+        <div id="@tableId" class="playerfield">
+
+        @for(int id=(nPlayer-1)*25+5;id<25*nPlayer+5;id++)
+        {
+            var buttonId = id;
+            <button id="@id" style="background-image: url(@GetImageFilePath(id)); border-style: @GetBorderStyle(id)"
+                    @onclick="@(e => PlayerGridClick(e, buttonId))"></button>
+        }
+        </div>
+    }
+            
+</AuthorizeView>
+
+    @code {
+
+    }

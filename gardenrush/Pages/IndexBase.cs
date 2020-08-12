@@ -71,17 +71,24 @@ namespace gardenrush.Pages
             await Task.Delay(1000); // time it takes for animation to complete.
         }
 
-        protected async Task RefillTruck()
+        protected async Task RefillTruck(int nPosition)
         {
-            truck.Empty();
-            List<Piece> NewPieces = (List<Piece>)await gameService.GetTruckPieces(gameId);
-            foreach (Piece piece in NewPieces)
+            List<Piece> TruckPieces = (List<Piece>)await gameService.GetTruckPieces(gameId);
+
+            Piece newPiece=null;
+            foreach(var piece in TruckPieces)
+                if (piece.NPosition == nPosition)
+                {
+                    newPiece = piece;
+                    break;
+                }
+
+            if(newPiece!=null)
             {
-                await JSRuntime.InvokeVoidAsync("tileAnimateImage", "bag", piece.NPosition, piece.GetImageFileName());
+                await JSRuntime.InvokeVoidAsync("tileAnimateImage", "bag", newPiece.NPosition, newPiece.GetImageFileName());
                 await Task.Delay(600); // time it takes for animation to complete.
-                truck.AddVeg(piece);
+                truck.AddVeg(newPiece);
             }
-            RefreshGame();  // kill the sound bug
         }
 
         protected void UpdateScores(int score1, int score2)
@@ -143,6 +150,7 @@ namespace gardenrush.Pages
             {
                 bFrom = false;
                 truck.ClearHighlighting();
+                int sourcePosition = pieceFrom.NPosition;   // save source position so we can refill it later
                 var action = new GameAction(1, status.ButtonId - (status.nCaller - 1) * 25 - 5, 
                                                     pieceFrom.PieceId, game.GameId, Player.Identity);
                 var result = await gameService.SubmitAction(action);
@@ -153,7 +161,7 @@ namespace gardenrush.Pages
                     // animation that takes 1000ms to complete
                     await JSRuntime.InvokeVoidAsync("tileAnimate", iFrom, status.ButtonId);
 
-                    await Task.Delay(100); // wait for javascript to grab the images
+                    await Task.Delay(900); // wait for javascript to grab the images
 
                     // updating components before animation completes
                     // so the pieces dissappear from the board                                    
@@ -161,18 +169,18 @@ namespace gardenrush.Pages
                     playerBoard.Update(game.NGameStatus, pieceFrom);
                     otherBoard.Update(game.NGameStatus);
 
-                    await Task.Delay(900); // rest of time it takes for animation to complete.
+                    await Task.Delay(100); // rest of time it takes for animation to complete.
 
                     bPollServer = true;
                     turnService.SetGameStatus(game.GameId, game.NGameStatus);
 
                     TurnMessage = "Please wait";
 
-                    // Reload truck if required
-                    if (result.bReloadTruck)
-                        await RefillTruck();
-                    else
-                        truck.Update(game.NGameStatus, pieceFrom);
+                    // remove old piece from truck list
+                    truck.Update(game.NGameStatus, pieceFrom);
+
+                    // add new piece
+                    await RefillTruck(sourcePosition);
 
                     StateHasChanged();
                 }
@@ -334,15 +342,15 @@ namespace gardenrush.Pages
                                     // updating components before animation completes
                                     // so the pieces dissappear from the board                                    
                                     playerBoard.Update(game.NGameStatus, null);
-                                    otherBoard.Update(game.NGameStatus, pieces[0]); // add
                                     truck.Update(game.NGameStatus, pieces[0]);      // remove
 
                                     await Task.Delay(900); // rest of time it takes for animation to complete.
 
+                                    otherBoard.Update(game.NGameStatus, pieces[0]); // add
+
+                                    await RefillTruck(history.NSourcePos);
                                 }
 
-                                if (history.BReloadTruck)
-                                    await RefillTruck();
 
                             }
                             else if(history.NActionType==2)

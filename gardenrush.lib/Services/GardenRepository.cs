@@ -261,25 +261,12 @@ namespace gardenrush.lib.services
 
             appDbContext.HistoryPiece.Add(historyPiece);
 
-            // check how many pices are left on the truck
-            var truckPieces = await appDbContext.Piece.Where(p => p.GameId == action.gameId && p.NOwner == 3).ToListAsync();
-            if(truckPieces.Count()==0)
+
+            var unusedPiece = await appDbContext.Piece.Where(p => p.GameId == action.gameId && p.NOwner == 0).FirstAsync();
+            if(unusedPiece!=null) 
             {
-                // assign the next 5 pieces to the mainboard
-                var unusedPieces = await appDbContext.Piece.Where(p => p.GameId == action.gameId && p.NOwner == 0).ToListAsync();
-                Console.WriteLine("unusedPiecesCount:{0}", unusedPieces.Count());
-                if(unusedPieces.Count>=5) // Game does not end when pieces run out.
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        unusedPieces[i].NOwner = (int)eOwner.mainboard;
-                        unusedPieces[i].NPosition = i;
-                        appDbContext.Piece.Update(unusedPieces[i]);
-                    }
-                    result.bReloadTruck = true;
-                    history.BReloadTruck = true;
-                    appDbContext.History.Update(history);
-                }
+                unusedPiece.NOwner = (int)eOwner.mainboard;
+                unusedPiece.NPosition = history.NSourcePos;
             }
 
             await appDbContext.SaveChangesAsync();

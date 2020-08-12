@@ -72,10 +72,6 @@ namespace gardenrush.Pages
             StateHasChanged();
         }
 
-        public void Empty()
-        {
-            OurPieces.Clear();
-        }
         public void AddVeg(Piece piece)
         {
             OurPieces.Add(piece);

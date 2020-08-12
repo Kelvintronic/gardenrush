@@ -44,8 +44,14 @@ function fillImageArray()
                 imageArray[i].dy=relEndY-parseInt(imageArray[i].style.top);
 
                 let backgroundImage = fromObj.style.backgroundImage;
-
-                rawImage = backgroundImage.substring(5, backgroundImage.length - 2);
+                if (isSafari)
+                {
+                    rawImage = backgroundImage.substring(4, backgroundImage.length - 1);
+                }
+                else
+                {
+                    rawImage = backgroundImage.substring(5, backgroundImage.length - 2);
+                }
                 imageArray[i].src=rawImage;
 
             }

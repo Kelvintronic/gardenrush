@@ -106,6 +106,7 @@ namespace gardenrush.Pages
                 bFrom = true;
                 iFrom = status.ButtonId;
                 pieceFrom = status.piece;
+                StateHasChanged();
             }
             if (status.nCaller!=0&&status.bHarvest)
             {
@@ -141,6 +142,7 @@ namespace gardenrush.Pages
             if (status.nCaller!=0&& bFrom)
             {
                 bFrom = false;
+                truck.ClearHighlighting();
                 var action = new GameAction(1, status.ButtonId - (status.nCaller - 1) * 25 - 5, 
                                                     pieceFrom.PieceId, game.GameId, Player.Identity);
                 var result = await gameService.SubmitAction(action);

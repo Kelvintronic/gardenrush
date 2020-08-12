@@ -1,4 +1,6 @@
-﻿function tileAnimateImage(idFrom, idTo, imageSource)
+﻿let mover = new moveObject();
+
+function tileAnimateImage(idFrom, idTo, imageSource)
 {
     mover.initMove();
 
@@ -28,9 +30,17 @@ function tileAnimate(idFrom, idTo) {
     let toObj = document.getElementById(idTo);
 
     let backgroundImage = fromObj.style.backgroundImage;
+    if(isSafari)
+    {
+        rawImage = backgroundImage.substring(4, backgroundImage.length - 1);
+    }
+    else
+    {
+        rawImage = backgroundImage.substring(5, backgroundImage.length - 2);
+    }
+    
     fromObj.style.backgroundImage = "url()";
 
-    rawImage = backgroundImage.substring(5, backgroundImage.length - 2);
     mover.setImage(rawImage);
 
     let boardObj = document.getElementById("board");
@@ -46,6 +56,4 @@ function tileAnimate(idFrom, idTo) {
     mover.start(parseInt(relStartX), parseInt(relStartY), parseInt(relEndX), parseInt(relEndY));
 }
 
-var mover = new moveObject();
-var placesound = new soundplayer("/audio/place.mp3");
-var pickupsound = new soundplayer("/audio/pickup_vol1.mp3");
+

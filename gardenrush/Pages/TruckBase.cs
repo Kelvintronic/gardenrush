@@ -92,7 +92,11 @@ namespace gardenrush.Pages
             // is there a vege in the plot?
             Piece piece = OurPieces.Find(p => p.NPosition == buttonId);
             if (piece == null)
-                return;   
+                return;
+
+            ClearHighlighting();
+
+            bHighlightState[buttonId] = true;
 
             NotifyChange(new Status(0, buttonId,piece));
         }
@@ -110,6 +114,13 @@ namespace gardenrush.Pages
 
             return "none";
         }
+        public void ClearHighlighting()
+        {
+            for (int i = 0; i < 5; i++)
+                bHighlightState[i] = false;
+        }
+
+
         protected override void OnParametersSet()
         {
             if(!bInitialized)

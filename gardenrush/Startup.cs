@@ -40,19 +40,31 @@ namespace gardenrush
         public void ConfigureServices(IServiceCollection services)
         {
             // configure Kestrel
-            services.Configure<KestrelServerOptions>(options =>
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
             {
-                byte[] localhost = { 127, 0, 0, 1 };
-                IPAddress address = new IPAddress(localhost);
-                options.Listen(address, Int32.Parse(Configuration["GardenRushPorts:Https"]), listenOptions =>
+                services.Configure<KestrelServerOptions>(options =>
                 {
-                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
-                        listenOptions.UseHttps(Configuration["SSL_Cert:Path"],
-                                                Configuration["SSL_Cert:Password"]);
-                    else
-                        listenOptions.UseHttps();
+                    byte[] localhost = { 127, 0, 0, 1 };
+                    IPAddress address = new IPAddress(localhost);
+                    options.Listen(address, Int32.Parse(Configuration["GardenRushPorts:Https"]), listenOptions =>
+                    {
+                            listenOptions.UseHttps(Configuration["SSL_Cert:Path"],
+                                                    Configuration["SSL_Cert:Password"]);
+                    });
                 });
-            });
+            }
+            else
+            {
+                services.Configure<KestrelServerOptions>(options =>
+                {
+                    byte[] localhost = { 192,168,1,192 };
+                    IPAddress address = new IPAddress(localhost);
+                    options.Listen(address, Int32.Parse(Configuration["GardenRushPorts:Https"]), listenOptions =>
+                    {
+                        listenOptions.UseHttps();
+                    });
+                });
+            }
 
             // Identity database connection
             services.AddDbContext<GardenIdentityDbContext>(options =>

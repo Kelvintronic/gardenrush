@@ -24,7 +24,7 @@ class moveObject
        let pickupsound;
    }
 
-    initMove = function () {
+    initMove () {
       moveObject.constructor.imgObj = document.getElementById('myImage');
       moveObject.constructor.imgObj.style.position= 'absolute'; 
       moveObject.constructor.imgObj.style.left = '0px'; 
@@ -34,14 +34,14 @@ class moveObject
       moveObject.constructor.steps = moveObject.constructor.time / moveObject.constructor.rate; // number of steps to destination
     }
 
-    setImage = function(image) {
+    setImage (image) {
         moveObject.constructor.imgObj.src = image;
     }
 
-   start = function(fromX, fromY, toX, toY)
+   start(fromX, fromY, toX, toY)
    {
        try {
-           pickupsound.playsound();
+           // pickupsound.playsound();
        }
        catch(ex) { }
       moveObject.constructor.startX=fromX;
@@ -57,13 +57,13 @@ class moveObject
 
       moveObject.constructor.animate = setInterval(this.step,moveObject.constructor.rate);    // call step in rate msec
    }
-   step = function()
+   step ()
    {
       moveObject.constructor.stepCount+=1;
       if(moveObject.constructor.stepCount>=moveObject.constructor.steps)
       {
           try {
-              placesound.playsound();
+             // placesound.playsound();
           }
           catch (ex) {}
           clearTimeout(moveObject.constructor.animate);

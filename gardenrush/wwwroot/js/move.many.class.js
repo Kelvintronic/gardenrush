@@ -12,13 +12,13 @@ class moveMany
       let images;    // array of html image objects
    }
 
-    initMove = function () {
+    initMove () {
       moveMany.constructor.time = 1000;     // 1000ms total move time
       moveMany.constructor.rate = 20;       // 20ms for each iteration
       moveMany.constructor.steps = moveMany.constructor.time / moveMany.constructor.rate; // number of steps to destination
     }
 
-   start = function(sourceArray,total)
+   start (sourceArray,total)
    {
         moveMany.constructor.images=new Array();
       for(i=0;i<total;i++)
@@ -34,7 +34,7 @@ class moveMany
 
       moveMany.constructor.animate = setInterval(this.step,moveMany.constructor.rate);    // call step in rate msec
    }
-   step = function()
+   step ()
    {
       moveMany.constructor.stepCount+=1;
       if(moveMany.constructor.stepCount>=moveMany.constructor.steps)

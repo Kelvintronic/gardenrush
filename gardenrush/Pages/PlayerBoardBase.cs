@@ -207,35 +207,6 @@ namespace gardenrush.Pages
 
             return result.GetImageFileName();
         }
-
-
-        private void SetStarPlots(int nPosition)
-        {
-            // calculate where they can place the piece without it being flipped
-            // which column?
-            int column = nPosition % 6;
-            // highlight all square in this column
-            bHighlightState[column] = true;
-            bHighlightState[column + 6] = true;
-            bHighlightState[column + 12] = true;
-            bHighlightState[column + 18] = true;
-            // which row?
-            int row = nPosition / 6;
-            // highlight all square in this row
-            bHighlightState[row * 6] = true;
-            bHighlightState[row * 6 + 1] = true;
-            bHighlightState[row * 6 + 2] = true;
-            bHighlightState[row * 6 + 3] = true;
-            bHighlightState[row * 6 + 4] = true;
-            bHighlightState[row * 6 + 5] = true;
-        }
-
-        private void ClearStarPlots()
-        {
-            for (int i = 0; i < 24; i++)
-                bHighlightState[i] = false;
-        }
-
         protected override void OnParametersSet()
         {
             if(!bInitialized)

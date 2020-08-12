@@ -18,7 +18,6 @@
     },
     "gardenrush": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "https://localhost:5007/?game=1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

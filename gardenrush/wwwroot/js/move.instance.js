@@ -2,9 +2,7 @@
 
 function tileAnimateImage(idFrom, idTo, imageSource)
 {
-    mover.initMove();
-
-    moveObject.constructor.time = 500;     // 500ms total move time
+    mover.initMove(500); // 500ms total move time   
 
     let fromObj = document.getElementById(idFrom);
     let toObj = document.getElementById(idTo);
@@ -25,7 +23,7 @@ function tileAnimateImage(idFrom, idTo, imageSource)
 }
 
 function tileAnimate(idFrom, idTo) {
-    mover.initMove();
+    mover.initMove(1000); // 1000ms total move time
     let fromObj = document.getElementById(idFrom);
     let toObj = document.getElementById(idTo);
 

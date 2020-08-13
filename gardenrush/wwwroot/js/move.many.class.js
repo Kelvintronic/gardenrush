@@ -30,16 +30,18 @@ class moveMany
           sourceArray[i].style.display="block";
           moveMany.constructor.images.push(sourceArray[i]);
       }
-      moveMany.constructor.stepCount = 0;
-
-      moveMany.constructor.animate = setInterval(this.step,moveMany.constructor.rate);    // call step in rate msec
+       moveMany.constructor.stepCount = 0;
+       if (moveMany.constructor.animate == undefined) {
+           moveMany.constructor.animate = setInterval(this.step, moveMany.constructor.rate);    // call step in rate msec
+       }
    }
    step ()
    {
       moveMany.constructor.stepCount+=1;
       if(moveMany.constructor.stepCount>=moveMany.constructor.steps)
       {
-          clearTimeout(moveMany.constructor.animate);
+          clearInterval(moveMany.constructor.animate);
+          moveMany.constructor.animate = undefined;
           for (i = 0; i < moveMany.constructor.images.length; i++)
           {
               moveMany.constructor.images[i].style.display = "none";

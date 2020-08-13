@@ -24,12 +24,12 @@ class moveObject
        let pickupsound;
    }
 
-    initMove () {
+    initMove (totalTime) {
       moveObject.constructor.imgObj = document.getElementById('myImage');
       moveObject.constructor.imgObj.style.position= 'absolute'; 
       moveObject.constructor.imgObj.style.left = '0px'; 
       moveObject.constructor.imgObj.style.top = '0px';
-      moveObject.constructor.time = 1000;     // 1000ms total move time
+      moveObject.constructor.time = totalTime;
       moveObject.constructor.rate = 20;       // 20ms for each iteration
       moveObject.constructor.steps = moveObject.constructor.time / moveObject.constructor.rate; // number of steps to destination
     }
@@ -55,7 +55,10 @@ class moveObject
       moveObject.constructor.stepCount = 0;
       moveObject.constructor.imgObj.style.display = "block";
 
-      moveObject.constructor.animate = setInterval(this.step,moveObject.constructor.rate);    // call step in rate msec
+       if (moveObject.constructor.animate == undefined) // Must be undefined or risk overwriting running interval
+       {
+           moveObject.constructor.animate = setInterval(this.step, moveObject.constructor.rate);    // call step in rate msec
+       }
    }
    step ()
    {
@@ -66,7 +69,8 @@ class moveObject
              // placesound.playsound();
           }
           catch (ex) {}
-          clearTimeout(moveObject.constructor.animate);
+          clearInterval(moveObject.constructor.animate);
+          moveObject.constructor.animate = undefined;
           moveObject.constructor.imgObj.style.display = "none";
       }
       if((moveObject.constructor.stepX<0&&moveObject.constructor.x>moveObject.constructor.startX+moveObject.constructor.dx)||(moveObject.constructor.stepX>0&&moveObject.constructor.x<moveObject.constructor.startX+moveObject.constructor.dx))

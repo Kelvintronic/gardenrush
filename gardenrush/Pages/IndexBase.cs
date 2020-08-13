@@ -156,28 +156,34 @@ namespace gardenrush.Pages
                 var result = await gameService.SubmitAction(action);
                 if (result.nResponseCode == 1)
                 {
+
                     // animate
                     // this call returns immediately but the javascript method sets up an
                     // animation that takes 1000ms to complete
                     await JSRuntime.InvokeVoidAsync("tileAnimate", iFrom, status.ButtonId);
 
-                    await Task.Delay(900); // wait for javascript to grab the images
+                    await Task.Delay(100); // wait for javascript to grab the image
 
-                    // updating components before animation completes
-                    // so the pieces dissappear from the board                                    
+                    // remove old piece from truck list
+                    // so the piece dissappears from the board                                    
+                    truck.Update(game.NGameStatus, pieceFrom);
+
+                    await Task.Delay(900); // rest of time it takes for animation to complete.
+
+                    // set pieceFrom new position and owner
+                    pieceFrom.NPosition = action.nActionArguement;
+                    pieceFrom.NOwner = Player.NPlayer;
+
+                    // updating components after animation completes
+                    // so the piece reappears at the destination
                     game.NGameStatus = result.nGameStatus;
                     playerBoard.Update(game.NGameStatus, pieceFrom);
                     otherBoard.Update(game.NGameStatus);
-
-                    await Task.Delay(100); // rest of time it takes for animation to complete.
 
                     bPollServer = true;
                     turnService.SetGameStatus(game.GameId, game.NGameStatus);
 
                     TurnMessage = "Please wait";
-
-                    // remove old piece from truck list
-                    truck.Update(game.NGameStatus, pieceFrom);
 
                     // add new piece
                     await RefillTruck(sourcePosition);

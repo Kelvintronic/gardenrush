@@ -236,16 +236,6 @@ namespace gardenrush.lib.services
             piece.NPosition = action.nActionArguement;
             appDbContext.Piece.Update(piece);
 
-            // Get turn count from nGameStatus (MSByte)
-            int turns = (action.game.NGameStatus & 0b1111_1111_0000_0000) / 256;
-            turns++;
-
-            // flip player turn bit
-            action.game.NGameStatus = (action.game.NGameStatus ^ 4);
-
-            // reform nGameStatus
-            action.game.NGameStatus = (action.game.NGameStatus & 0b0000_0000_1111_1111) + turns * 256;
-            appDbContext.Game.Update(action.game);
             var dBresult = appDbContext.History.Add(history);
             
             // save required at this point to populate dBresult.HistoryId
@@ -262,12 +252,31 @@ namespace gardenrush.lib.services
             appDbContext.HistoryPiece.Add(historyPiece);
 
 
-            var unusedPiece = await appDbContext.Piece.Where(p => p.GameId == action.gameId && p.NOwner == 0).FirstAsync();
-            if(unusedPiece!=null) 
+            Piece unusedPiece;
+            try
             {
+                unusedPiece = await appDbContext.Piece.Where(p => p.GameId == action.gameId && p.NOwner == 0).FirstAsync();
                 unusedPiece.NOwner = (int)eOwner.mainboard;
                 unusedPiece.NPosition = history.NSourcePos;
+                appDbContext.Update(unusedPiece);
             }
+            catch (Exception)
+            {
+                var truckPieces = appDbContext.Piece.Where(p => p.GameId == action.gameId && p.NOwner == 3);
+                if (truckPieces.Count() == 0) // Game over condition
+                    action.game.NGameStatus = action.game.NGameStatus ^ 2;
+            }
+
+            // Get turn count from nGameStatus (MSByte)
+            int turns = (action.game.NGameStatus & 0b1111_1111_0000_0000) / 256;
+            turns++;
+
+            // flip player turn bit
+            action.game.NGameStatus = (action.game.NGameStatus ^ 4);
+
+            // reform nGameStatus
+            action.game.NGameStatus = (action.game.NGameStatus & 0b0000_0000_1111_1111) + turns * 256;
+            appDbContext.Game.Update(action.game);
 
             await appDbContext.SaveChangesAsync();
             result.nGameStatus = action.game.NGameStatus;
@@ -281,6 +290,9 @@ namespace gardenrush.lib.services
 
             var score = new Score(action.Pieces);
             action.player.NScore += score.Calculate();
+
+            // add companion bonus
+            action.player.NScore += action.nActionArguement;
 
             // increase score for each star
             foreach(var piece in action.Pieces)
@@ -321,7 +333,7 @@ namespace gardenrush.lib.services
             action.game.NGameStatus = (action.game.NGameStatus & 0b0000_0000_1111_1111) + turns * 256;
             appDbContext.Game.Update(action.game);
             appDbContext.Player.Update(action.player);
-            appDbContext.History.Add(history);
+            var historyResult = appDbContext.History.Add(history);
 
             // save required at this point to populate dBresult.HistoryId
             // and to allow the reload truck check to reflect the changes so far
@@ -330,19 +342,21 @@ namespace gardenrush.lib.services
             // add linking HistoryPiece entries
             foreach(Piece piece in action.Pieces)
             {
+                // we must get the piece tracked by the dB otherwise updating will
+                // throw and exception
+                var trackedPiece = await appDbContext.Piece.FindAsync(piece.PieceId);
+
                 // mark piece as discarded
-                piece.NOwner = (int)eOwner.discard;
+                trackedPiece.NOwner = (int)eOwner.discard;
+                appDbContext.Piece.Update(trackedPiece);
 
                 HistoryPiece historyPiece = new HistoryPiece
                 {
-                    HistoryId = history.HistoryId,
-                    PieceId = piece.PieceId
+                    HistoryId = historyResult.Entity.HistoryId,
+                    PieceId = trackedPiece.PieceId
                 };
                 appDbContext.HistoryPiece.Add(historyPiece);
             }
-
-            // save alterations to pieces
-            appDbContext.Piece.UpdateRange(action.Pieces);
 
             await appDbContext.SaveChangesAsync();
             result.nGameStatus = action.game.NGameStatus;

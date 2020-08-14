@@ -50,10 +50,12 @@ namespace gardenrush.Pages
         // Status variables calculated from nGameStatus in OnParametersSet()
         private bool bOurTurn;
         private bool bInitialized = false;
+
+        // Harvest variables
         private bool[] bHighlightState = new bool[25];
         public List<Piece> harvestList = new List<Piece>();
         public List<int> harvestIdList = new List<int>();
-        public List<CoOrdinate> harvestCoOrdList = new List<CoOrdinate>();
+        public int companionBonus;
 
         public PlayerBoardBase()
         {
@@ -92,6 +94,9 @@ namespace gardenrush.Pages
                 OurPieces.Remove(piece);
         }
 
+        // companion position matrix
+        private static int[] companion = { -5, -1, 1, 5 };
+
         protected async void HarvestClick(MouseEventArgs eventArgs)
         {
             if (!bOurTurn)
@@ -101,12 +106,40 @@ namespace gardenrush.Pages
                 bHarvest = false;
                 if(harvestList.Count()>0)
                 {
+                    var harvestCompanionList = new List<int>();
                     foreach(Piece piece in harvestList)
                     {
                         bHighlightState[piece.NPosition] = false;
-                        harvestCoOrdList.Add(new CoOrdinate(piece.NPosition));
                         harvestIdList.Add(piece.NPosition + (nPlayer-1)*25+5);
+
+                        // check for companions
+                        for (int i = 0; i < 4; i++)
+                        {
+                            int pos = piece.NPosition + companion[i];
+                            if (pos >= 0 && pos < 25)
+                            {
+                                Piece companionPiece = OurPieces.Find(p => p.NPosition == pos);
+                                if (companionPiece != null)
+                                {
+                                    ePieceType companionType = companionPiece.GetPieceType();
+                                    if (companionPiece.GetPieceType() == ePieceType.pepper_red ||
+                                        companionPiece.GetPieceType() == ePieceType.pepper_yellow)
+                                        companionType = ePieceType.pepper_green;
+                                    if (companionType == piece.GetCompanionType())
+                                    {
+                                        harvestCompanionList.Add(pos);
+                                    }
+                                }
+                            }
+                        }
                     }
+
+                    // filter companion list for distinct items
+                    var distinctCompanionSet = harvestCompanionList.Distinct();
+
+                    // set bonus points for companions
+                    companionBonus = distinctCompanionSet.Count();
+
                     NotifyChange(new Status(nPlayer, true));
                 }
             }
@@ -114,7 +147,6 @@ namespace gardenrush.Pages
             {
                 harvestList.Clear();
                 harvestIdList.Clear();
-                harvestCoOrdList.Clear();
                 bHarvest = true;
             }
             StateHasChanged();

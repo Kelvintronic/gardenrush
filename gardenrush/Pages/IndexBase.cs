@@ -118,7 +118,7 @@ namespace gardenrush.Pages
             if (status.nCaller!=0&&status.bHarvest)
             {
 
-                var action = new GameAction(gameId, Player.Identity, playerBoard.harvestList);
+                var action = new GameAction(gameId, playerBoard.companionBonus, Player.Identity, playerBoard.harvestList);
                 var result = await gameService.SubmitAction(action);
 
                 if (result.nResponseCode == 1)
@@ -170,6 +170,10 @@ namespace gardenrush.Pages
 
                     await Task.Delay(900); // rest of time it takes for animation to complete.
 
+                    // flip piece if required
+                    if (action.nActionArguement % 5 != pieceFrom.NPosition)
+                        pieceFrom.NPieceStatus = (pieceFrom.NPieceStatus | 2); // set bit 2 - star side down 
+
                     // set pieceFrom new position and owner
                     pieceFrom.NPosition = action.nActionArguement;
                     pieceFrom.NOwner = Player.NPlayer;
@@ -180,10 +184,18 @@ namespace gardenrush.Pages
                     playerBoard.Update(game.NGameStatus, pieceFrom);
                     otherBoard.Update(game.NGameStatus);
 
-                    bPollServer = true;
-                    turnService.SetGameStatus(game.GameId, game.NGameStatus);
+                    // first check if the game is over
+                    if ((game.NGameStatus & 2) == 0)
+                    {
+                        TurnMessage = "Game Over";
+                    }
+                    else
+                    {
+                        bPollServer = true;
+                        TurnMessage = "Please wait";
+                    }
 
-                    TurnMessage = "Please wait";
+                    turnService.SetGameStatus(game.GameId, game.NGameStatus);
 
                     // add new piece
                     await RefillTruck(sourcePosition);
@@ -319,6 +331,7 @@ namespace gardenrush.Pages
                     // first check if the game is over
                     if ((nGameStatus & 2) == 0)
                     {
+                        TurnMessage = "Game Over";
                         game.NGameStatus = nGameStatus;
                         bPollServer = false;    // if so stop polling
                     }

@@ -32,6 +32,12 @@ namespace gardenrush.lib.Data
             "Corn-Star.png", "Cabbage-Star.png", "Turnip-Star.png", "Tomato-Star.png", "Eggplant-Star.png", "Potato-Star.png",
             "Peas-Star.png", "Pepper-Green-Star.png","Pepper-Red-Star.png","Pepper-Yellow-Star.png"
         };
+
+        // corn, cabbage, turnip, tomato, aubergine, potato, pea, pepper_green, pepper_red, pepper_yellow, none
+
+        private static ePieceType[] CompanionTypes = { ePieceType.pea, ePieceType.potato, ePieceType.tomato, ePieceType.turnip,
+                                                        ePieceType.pepper_green, ePieceType.cabbage, ePieceType.corn, ePieceType.aubergine,
+                                                        ePieceType.aubergine, ePieceType.aubergine, ePieceType.none };
         public string GetImageFileName()
         {
             if (NPieceType == (int)ePieceType.none)
@@ -58,6 +64,11 @@ namespace gardenrush.lib.Data
         public ePieceType GetPieceType()
         {
             return (ePieceType)NPieceType;
+        }
+
+        public ePieceType GetCompanionType()
+        {
+            return CompanionTypes[NPieceType];
         }
 
         public bool IsSideOne()
